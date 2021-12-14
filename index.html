@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8">
+    
+    <link rel="stylesheet" href="index.css" type="text/css">
+  </head>
+
+  <body>
+    <main>
+      <section id="products">
+      </section>
+      <section>
+        <button id="completeOrder">Complete Order</button>
+      </section>
+      
+      <section id="orders">
+      
+      </section>
+    </main>
+
+    <script>
+      let totalPurchase = 0;
+      let totalItems = 0;
+      let plusBtn = document.querySelectorAll(".plus");
+      plusBtn.forEach(e => e.addEventListener('click', function(){
+        console.log("Clicked");
+      }));
+
+      function minus(e){
+      
+        let value = e.parentElement.children[1].children[1];
+        let total = e.parentElement.children[1].children[2];
+        let stock = e.parentElement.children[1].children[3];
+        let maxStock = e.parentElement.children[1].children[3].max;
+        
+        
+        alterStock("add", stock, total, value, maxStock);
+      }
+      
+      function plus(e){
+      
+        let value = e.parentElement.children[1].children[1];
+        let total = e.parentElement.children[1].children[2];
+        let stock = e.parentElement.children[1].children[3];
+        
+        alterStock("remove", stock, total, value, false)
+        
+      }
+      
+      function alterStock(action, stock, total, value, maxStock=false){
+        
+        switch (action) {
+          case 'add':
+            if(Number(stock.value) < Number(maxStock)){
+              stock.value = Number(stock.value) + 1;
+              total.value = Number(total.value) - Number(value.value);
+            }
+            break;
+          case 'remove':
+          
+            if(stock.value != 0){
+            console.log("hey");
+              stock.value = Number(stock.value) - 1;
+              total.value = Number(total.value) + Number(value.value); 
+            }
+            break;
+        }
+      }
+      
+      
+      
+      let inventory = {
+                  moletes: {
+                    id: 1,
+                    name: "Papos Secos",
+                    priceFull: 0.15,
+                    priceUsual: 0.12,
+                    priceHalf: 0.7,
+                    stock: 150,
+                    category: "Pão"
+                  },
+                  mistura: {
+                    id: 23,
+                    name: "Pão de Mistura",
+                    priceFull: 0.15,
+                    stock: 5,
+                    category: "Pão"
+                  }
+          };
+          
+          let products = document.querySelector("#products");
+          
+          for(product in inventory){
+            products.insertAdjacentHTML('afterbegin', `
+            <article id="${inventory[product]}" class="product">
+              <button onclick="minus(this)" class="minus">-</button>
+              <div class="product-info">
+                <h2>${inventory[product].name}</h2>
+                <input class="price" type="number" value="${inventory[product].priceFull}" step="0.01">
+                <input class="actual" type="number" value="0" step="0.01" disabled>
+                <input class="stock" type="number" max="${inventory[product].stock}" value="${inventory[product].stock}" disabled>
+                
+              </div>
+              <button onclick="plus(this)" class="plus">+</button>
+            </article>
+            `);
+          }
+    </script>
+  </body>
+</html>
